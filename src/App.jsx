@@ -5,7 +5,7 @@ import { GithubProvider } from './context/github.provider';
 const App = () => {
   return (
     <main>
-      <GithubProvider>
+      <GithubProvider >
         <ResetCSS />
         <Layout>
           <Profile />

@@ -9,25 +9,31 @@ export const Profile = () => {
             <S.WrapperImage src="https://avatars.githubusercontent.com/u/71531287?v=4" alt="Avatar of user" />
             <S.WrapperInfoUser>
                 <div>
-                    <h1>{githubState}</h1>
+                    <h1>{githubState.user.name}</h1>
                     <S.WrapperUserName>
                         <h3>userName: </h3>
-                        <a href="https://github.com/josejonathan7" target='_blank' rel='noreferrer'>jose jonathan</a>
+                        <a href={githubState.user.html_url} target='_blank' rel='noreferrer'>
+                            {githubState.user.login}
+                        </a>
                     </S.WrapperUserName>
                 </div>
             
                 <S.WrapperStatusCount>
                     <div>
                         <h4>Followers</h4>
-                        <span>5</span>
+                        <span>{githubState.user.followers}</span>
                     </div>
                     <div>
-                        <h4>Starreds</h4>
-                        <span>5</span>
+                        <h4>Gists</h4>
+                        <span>{githubState.user.public_gists}</span>
+                    </div>
+                    <div>
+                        <h4>Repos</h4>
+                        <span>{githubState.user.public_repos}</span>
                     </div>
                     <div>
                         <h4>Followings</h4>
-                        <span>5</span>
+                        <span>{githubState.user.following}</span>
                     </div>
                 </S.WrapperStatusCount>
             </S.WrapperInfoUser>
