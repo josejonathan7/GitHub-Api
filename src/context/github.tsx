@@ -1,7 +1,7 @@
-import { createContext, useCallback, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { api } from '../services/api';
 
-interface User {
+type User ={
         login: string,
         name: string,
         html_url: string,
@@ -15,25 +15,24 @@ interface User {
         avatar_url: string;
 }
 
-interface Repositories {
+type RepositoriesStarred ={
     id: string;
     name: string;
     full_name: string;
-    url: string;
+    html_url: string;
 }
 
-interface GitDataType {
+type GitDataType ={
     loading: boolean,
     user: User;
-    repositories: Repositories[],
-    starred: []
 }
 
-interface ContextType {
+type ContextType ={
     githubState: GitDataType;
     getUser?: (userName: string) => any; 
     hasUser: boolean;
-    getUserRepos?: () => any;
+    repositories: RepositoriesStarred[];
+    starred: RepositoriesStarred[];
 }
 
 export const GithubContext = createContext({} as ContextType);
@@ -53,18 +52,11 @@ export const GithubProvider = ({children}) => {
             public_gists: 0,
             public_repos: 0,
             avatar_url: ''
-        },
-        repositories: [
-           {
-            id: '',
-            name: '',
-            full_name: '',
-            url: ''
-           }
-        ],
-        starred: []
+        }
     });
     const [ hasUser, setHasUser ] = useState(false);
+    const [ repositories, setRepositories ] = useState<RepositoriesStarred[]>([]);
+    const [ starred, setStarred ] = useState<RepositoriesStarred[]>([]);
 
     const getUser = (userName: string) => {
         setGithubState(prevState => ({
@@ -97,21 +89,32 @@ export const GithubProvider = ({children}) => {
             }));
         })
     }
-
-    
-    const getUserRepos = () => {
-
-        /*api.get<Repositories[]>(`users/${githubState.user.login}/repos`).then(({data}) => {
-            console.log(data)
-            setGithubState(prevState => ({
-                ...prevState,
-                repositories: data
-            }));
-
-        });*/
+   
+    const getUserRepos = async (userName: string) => {
+        await api.get<RepositoriesStarred[]>(`users/${userName}/repos`).then(({data}) => {
+           setRepositories(data);
+        });
     }
 
+    const getUserStarred = async (userName: string) => {
+        await api.get<RepositoriesStarred[]>(`users/${userName}/starred`).then(({data}) => {
+           setStarred(data);
+        });
+    }
+
+    useEffect(() => {
+        async function getData(){
+            await getUserRepos(githubState.user.login);
+            await getUserStarred(githubState.user.login);
+        }
+
+        if(!!githubState.user.login){
+           getData();
+        }    
+    }, [githubState.user.login])
+
+
     return (
-        <GithubContext.Provider value={{getUser, githubState, hasUser, getUserRepos}} >{children}</GithubContext.Provider>
+        <GithubContext.Provider value={{getUser, githubState, hasUser, repositories, starred}} >{children}</GithubContext.Provider>
     );
 }

@@ -1,26 +1,55 @@
 import * as S from './styled';
 import { RepositorieItem } from '../';
-import { useContext, useEffect, useState } from 'react';
+import { Key, useContext, useEffect, useState } from 'react';
 import { GithubContext } from '../../context/github';
 
+type RepositoriesStarred ={
+    id: string;
+    name: string;
+    full_name: string;
+    html_url: string;
+}
+
 export const Repositories = () => {
-    const { getUserRepos, githubState } = useContext(GithubContext);
-    const [ hasUserForSearchRepo, setHasUserForSearchRepo ] = useState(false);
+    const { repositories: ContextRepositories, githubState, starred: ContextStarred } = useContext(GithubContext);
+    const [ repositories, setRepositories ] = useState<RepositoriesStarred[]>([]);
+    const [ starred, setStarred ] = useState<RepositoriesStarred[]>([]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         if(!!githubState.user.login){
-            getUserRepos();
+            console.log(ContextStarred)
+            console.log(ContextRepositories)
+            setRepositories(ContextRepositories);
+            setStarred(ContextStarred);
         }
+    }, [githubState.user.login]);
 
-        setHasUserForSearchRepo(!!githubState.repositories)
-    }, [githubState.user])*/
+    const renderRepos = (item: RepositoriesStarred) => {
+        return (
+            <RepositorieItem 
+                fullName={item.full_name}
+                name={item.name}
+                linkToRepo={item.html_url}
+                key={item.id}
+            />
+        )
+    }
 
-    //console.log(!!githubState.user.login);
+    const renderStarred = (item: RepositoriesStarred) => {
+        return (
+            <RepositorieItem 
+                fullName={item.full_name}
+                name={item.name}
+                linkToRepo={item.html_url}
+                key={item.id}
+            />
+        );
+    }
 
     return (
         <>
             {
-                hasUserForSearchRepo ?                     
+                repositories.length > 0 ?                     
                 (
                     <S.WrapperTabs
                         selectedTabClassName="is-selected"
@@ -30,13 +59,16 @@ export const Repositories = () => {
                             <S.WrapperTab>Repositories</S.WrapperTab>
                             <S.WrapperTab>Starred</S.WrapperTab>
                         </S.WrapperTabList>
+                        <S.WrapperTabPanel>
+                           
+                            { repositories.map(renderRepos)}
+
+                        </S.WrapperTabPanel>
                         
                         <S.WrapperTabPanel>
-                            <RepositorieItem
-                                linkToRepo="https://github.com/josejonathan7/Agenda-Atividade-Etec"
-                                name="Agenda-Atividade-Etec"
-                                fullName="josejonathan7/Agenda-Atividade-Etec"
-                            />
+                            
+                            { starred.map(renderStarred)}
+
                         </S.WrapperTabPanel>
 
                     </S.WrapperTabs>
@@ -45,13 +77,3 @@ export const Repositories = () => {
         </>
     );
 }
-/*<S.WrapperTabPanel>
-{githubState.repositories.map(item => {
-    <RepositorieItem
-       linkToRepo="https://github.com/josejonathan7/-semana-javascript-expert05"
-       name={item.name}
-       fullName="josejonathan7/-semana-javascript-expert05"
-   />
-})}
-
-</S.WrapperTabPanel>*/

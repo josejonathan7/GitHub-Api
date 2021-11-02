@@ -38,8 +38,14 @@ export const WrapperTabPanel = styled(TabPanel)`
   border: 1px solid "#ccc";
   display: none;
   margin-top: -5px;
+  width: 100%;
+
   &.is-selected {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
   }
 `;
 WrapperTabPanel.tabsRole = "TabPanel";
