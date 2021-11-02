@@ -1,6 +1,6 @@
 import { ResetCSS } from './global/resetCSS';
 import { Layout, Profile, Repositories} from './components';
-import { GithubProvider } from './context/github.provider';
+import { GithubProvider } from './context/github';
 
 const App = () => {
   return (

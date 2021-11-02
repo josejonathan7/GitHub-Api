@@ -1,6 +1,4 @@
 
-
-
 export const RepositorieItem = ({name, fullName, linkToRepo}) => {
 
 
