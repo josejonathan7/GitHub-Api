@@ -24,6 +24,10 @@ export const WrapperTab = styled(Tab)`
   z-index: 99999;
   background-color: "#fff";
   margin: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
   &:focus {
     outline: none;
   }

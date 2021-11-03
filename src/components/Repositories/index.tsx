@@ -1,7 +1,8 @@
 import * as S from './styled';
 import { RepositorieItem } from '../';
-import { Key, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GithubContext } from '../../context/github';
+import { RiGitRepositoryFill, AiFillStar } from 'react-icons/all';
 
 type RepositoriesStarred ={
     id: string;
@@ -11,18 +12,18 @@ type RepositoriesStarred ={
 }
 
 export const Repositories = () => {
-    const { repositories: ContextRepositories, githubState, starred: ContextStarred } = useContext(GithubContext);
-    const [ repositories, setRepositories ] = useState<RepositoriesStarred[]>([]);
-    const [ starred, setStarred ] = useState<RepositoriesStarred[]>([]);
+    const { githubState, getUserRepos, getUserStarred } = useContext(GithubContext);
+    const [hasUserForSearchrepos, setHasUserForSearchrepos] = useState(false);
 
     useEffect(() => {
-        if(!!githubState.user.login){
-            console.log(ContextStarred)
-            console.log(ContextRepositories)
-            setRepositories(ContextRepositories);
-            setStarred(ContextStarred);
+        if (githubState.user.login) {
+          getUserRepos(githubState.user.login);
+          getUserStarred(githubState.user.login);
         }
-    }, [githubState.user.login]);
+        setHasUserForSearchrepos(!!githubState.repositories);
+    
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [githubState.user.login]);
 
     const renderRepos = (item: RepositoriesStarred) => {
         return (
@@ -49,25 +50,29 @@ export const Repositories = () => {
     return (
         <>
             {
-                repositories.length > 0 ?                     
+                hasUserForSearchrepos ?                     
                 (
                     <S.WrapperTabs
                         selectedTabClassName="is-selected"
                         selectedTabPanelClassName="is-selected"
                     >
                         <S.WrapperTabList>
-                            <S.WrapperTab>Repositories</S.WrapperTab>
-                            <S.WrapperTab>Starred</S.WrapperTab>
+                            <S.WrapperTab>
+                                <RiGitRepositoryFill size="24" /> Repositories
+                            </S.WrapperTab>
+                            <S.WrapperTab>
+                                <AiFillStar size="24" /> Starred
+                            </S.WrapperTab>
                         </S.WrapperTabList>
                         <S.WrapperTabPanel>
                            
-                            { repositories.map(renderRepos)}
+                            { githubState.repositories.map(renderRepos)}
 
                         </S.WrapperTabPanel>
                         
                         <S.WrapperTabPanel>
                             
-                            { starred.map(renderStarred)}
+                            { githubState.starred.map(renderStarred)}
 
                         </S.WrapperTabPanel>
 

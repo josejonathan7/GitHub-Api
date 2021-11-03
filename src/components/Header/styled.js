@@ -22,6 +22,10 @@ export const Wrapper = styled.div`
         border-radius: 8px;
         color: #CCC;
         border: 1px solid #CCC;
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
 
         &:hover {
             filter: brightness(0.8);

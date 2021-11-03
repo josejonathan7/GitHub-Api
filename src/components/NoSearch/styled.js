@@ -9,6 +9,9 @@ export const Wrapper = styled.div`
     align-items: center;
 
     h1 {
+        display: flex;
+        align-items: center;
+        gap: 20px;
         font-size: 48px;
         font-weight: bold;
     }
